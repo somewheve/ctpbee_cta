@@ -27,7 +27,7 @@ from ctpbee import CtpBee
 def go_ahead():
     app = CtpBee("hello wh", __name__)
     app.config.from_json("config.json")
-    double_ma = DoubleMaStrategy(app=app,cta_symbol="ag1902", name="double_ma")
+    double_ma = DoubleMaStrategy(app=app,cta_symbol="ag1902.SHFE", name="double_ma")
     app.start()
     app.subscribe("ag1912")
 

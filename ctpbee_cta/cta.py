@@ -20,9 +20,9 @@ Notice : 神兽保佑 ，测试一次通过
 //
 """
 from ctpbee import CtpBee
-from ctpbee.interface.ctp.constant import Direction, Offset, EVENT_BAR
+from ctpbee.constant import Direction, Offset, EVENT_BAR
 from ctpbee_cta.handler import Handler
-from ctpbee.interface.ctp.constant import EVENT_LOG
+from ctpbee.constant import EVENT_LOG
 from ctpbee.event_engine import Event
 
 

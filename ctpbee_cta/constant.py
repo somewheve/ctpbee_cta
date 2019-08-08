@@ -23,7 +23,7 @@ Notice : 神兽保佑 ，测试一次通过
 from dataclasses import dataclass, field
 from enum import Enum
 
-from ctpbee.interface.ctp.constant import Direction, Offset
+from ctpbee.constant import Direction, Offset
 
 APP_NAME = "CtaStrategy"
 STOPORDER_PREFIX = "STOP"

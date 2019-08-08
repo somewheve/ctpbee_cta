@@ -21,7 +21,7 @@ Notice : 神兽保佑 ，测试一次通过
 """
 from copy import copy
 
-from ctpbee.interface.ctp.constant import OrderData, OrderRequest, TradeData, Direction, Offset, PositionData, ContractData, \
+from ctpbee.constant import OrderData, OrderRequest, TradeData, Direction, Offset, PositionData, ContractData, \
     Exchange
 
 
@@ -35,10 +35,10 @@ class OffsetConverter:
 
     def update_position(self, position: PositionData):
         """"""
-        if not self.is_convert_required(position.vt_symbol):
+        if not self.is_convert_required(position.local_symbol):
             return
 
-        holding = self.get_position_holding(position.vt_symbol)
+        holding = self.get_position_holding(position.local_symbol)
         holding.update_position(position)
 
     def update_trade(self, trade: TradeData):

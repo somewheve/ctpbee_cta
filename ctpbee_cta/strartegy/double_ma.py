@@ -20,22 +20,21 @@ Notice : 神兽保佑 ，测试一次通过
 //
 """
 
-from ctpbee_cta.cta import Cta
-from ctpbee.data_handle.generator import DataGenerator
-from ctpbee.interface.ctp.constant import (
+from ctpbee import CtpbeeApi
+from ctpbee.constant import (
 
     TickData,
     BarData,
     TradeData,
     OrderData,
-)
-from ctpbee_cta.help import ArrayManager
+    AccountData, PositionData, LogData, ContractData)
+
 from ctpbee_cta.constant import StopOrder
+from ctpbee_cta.cta import Cta
+from ctpbee_cta.help import ArrayManager
 
-from ctpbee import ExtAbstract
 
-
-class DoubleMaStrategy(ExtAbstract):
+class DoubleMaStrategy(CtpbeeApi):
     author = "open_source"
     name = "double ma"
 
@@ -54,7 +53,8 @@ class DoubleMaStrategy(ExtAbstract):
     def __init__(self, name, app, cta_symbol):
         """"""
 
-        super().__init__(name=name, app=app)
+
+        super().__init__(extension_name=name, app=app)
         self.cta_symbol = cta_symbol
         self.cta_pointer = Cta(cta_name=self.name, app=self.app, symbol=self.cta_symbol)
         self.am = ArrayManager()
@@ -63,14 +63,27 @@ class DoubleMaStrategy(ExtAbstract):
         pass
 
     def on_init(self):
-        """
-        Callback when strategy is inited.
-        """
         self.cta_pointer.export_log("策略初始化")
         self.load_bar(10)
 
-    def load_bar(self):
-        """ accourding to your own data_"""
+    def on_account(self, account: AccountData) -> None:
+        pass
+
+    def on_position(self, position: PositionData) -> None:
+        pass
+
+    def on_log(self, log: LogData):
+        pass
+
+    def on_contract(self, contract: ContractData):
+
+        if contract.local_symbol == self.cta_symbol:
+            self.cta_pointer.export_log("成功订阅相关行情")
+            self.app.subscribe(self.cta_symbol)
+
+    def load_bar(self, count):
+        """ Accourding to your own data"""
+
 
     def on_start(self):
         """

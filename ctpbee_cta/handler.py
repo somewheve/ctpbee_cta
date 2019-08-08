@@ -21,7 +21,7 @@ Notice : 神兽保佑 ，测试一次通过
 """
 from copy import copy
 
-from ctpbee.interface.ctp.constant import Direction, Offset, EVENT_LOG, ContractData, OrderType, OrderRequest, EVENT_TICK, \
+from ctpbee.constant import Direction, Offset, EVENT_LOG, ContractData, OrderType, OrderRequest, EVENT_TICK, \
     EVENT_ORDER, EVENT_TRADE, EVENT_POSITION
 from ctpbee.event_engine import Event
 
