@@ -20,6 +20,6 @@ Notice : 神兽保佑 ，测试一次通过
 //
 """
 
-from ctpbee_cta.cta import Cta
+from ctpbee_cta.cta import CtaCore
 from ctpbee_cta.indicator import *
 from ctpbee_cta.strategy import *

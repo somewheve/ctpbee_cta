@@ -30,7 +30,7 @@ from ctpbee.constant import (
     AccountData, PositionData, LogData, ContractData)
 
 from ctpbee_cta.constant import StopOrder
-from ctpbee_cta.cta import Cta
+from ctpbee_cta.cta import CtaCore
 from ctpbee_cta.help import ArrayManager
 
 
@@ -56,7 +56,7 @@ class DoubleMaStrategy(CtpbeeApi):
 
         super().__init__(extension_name=name, app=app)
         self.cta_symbol = cta_symbol
-        self.cta_pointer = Cta(cta_name=self.name, app=self.app, symbol=self.cta_symbol)
+        self.cta_pointer = CtaCore(cta_name=self.name, app=self.app, symbol=self.cta_symbol)
         self.am = ArrayManager()
 
     def put_event(self):
