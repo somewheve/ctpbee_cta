@@ -25,7 +25,6 @@ from ctpbee.constant import Direction, Offset, EVENT_LOG, ContractData, OrderTyp
 from ctpbee.event_engine import Event
 
 from ctpbee_cta.constant import STOPORDER_PREFIX, StopOrder, StopOrderStatus, EVENT_CTA_STOPORDER
-from ctpbee_cta.covert import OffsetConverter
 from ctpbee_cta.help import round_to
 
 
@@ -39,7 +38,6 @@ class Handler:
         self.orderid_strategy_map = {}
         self.strategy_orderid_map = {}
 
-        self.offset_converter = OffsetConverter(cta.app)
         self.stop_order_count = 0
         self.stop_orders = {}
 
