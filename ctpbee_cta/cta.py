@@ -33,7 +33,7 @@ class CtaCore:
         self.cta_name = cta_name
 
         # 核心处理器 --> 调度发单等等
-        self.core_handler = Handler(cta=self, symbol=symbol)
+        self.core_handler = Handler(cta=self, local_symbol=symbol)
 
     @property
     def pos(self):

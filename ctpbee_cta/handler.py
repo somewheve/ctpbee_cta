@@ -31,13 +31,12 @@ from ctpbee_cta.help import round_to
 class Handler:
     """  单策略实现  """
 
-    def __init__(self, cta, symbol):
+    def __init__(self, cta, local_symbol):
         self.cta = cta
-        self.symbol = symbol
+        self.local_symbol = local_symbol
         self.event_engine = cta.app.event_engine
         self.orderid_strategy_map = {}
         self.strategy_orderid_map = {}
-
         self.stop_order_count = 0
         self.stop_orders = {}
 
@@ -47,9 +46,9 @@ class Handler:
 
     def send_order(self, direction: Direction, offset: Offset, price: float, volume: float, stop: bool, lock: bool):
         """ 提供外层访问的API """
-        contract = self.cta.app.recorder.get_contract(self.symbol)
+        contract = self.cta.app.recorder.get_contract(self.local_symbol)
         if not contract:
-            self.export_log(f"委托失败，找不到合约：{self.symbol}")
+            self.export_log(f"委托失败，找不到合约：{self.local_symbol}")
             return ""
         # Round order price and volume to nearest incremental value
         price = round_to(price, contract.pricetick)
@@ -133,7 +132,7 @@ class Handler:
             local_orderid = self.cta.app.send_order(
                 req, contract.gateway_name)
             local_orderids.append(local_orderid)
-            self.cta.app.recorder.position_manager.get(contract.local_symbol)._update_order_request(req, local_orderid)
+            self.cta.app.recorder.position_manager.get(contract.local_symbol).update_order_request(req, local_orderid)
 
             # Save relationship between orderid and strategy.
             self.orderid_strategy_map[local_orderid] = self.cta
@@ -155,7 +154,7 @@ class Handler:
         stop_orderid = f"{STOPORDER_PREFIX}.{self.stop_order_count}"
 
         stop_order = StopOrder(
-            vt_symbol=self.symbol,
+            local_symbol=self.local_symbol,
             direction=direction,
             offset=offset,
             price=price,
@@ -226,9 +225,9 @@ class Handler:
         """
         撤掉全部单子
         """
-        vt_orderids = self.strategy_orderid_map[self.cta.cta_name]
-        if not vt_orderids:
+        local_orderids = self.strategy_orderid_map[self.cta.cta_name]
+        if not local_orderids:
             return
 
-        for vt_orderid in copy(vt_orderids):
-            self.cancel_order(vt_orderid)
+        for local_orderid in copy(local_orderids):
+            self.cancel_order(local_orderid)

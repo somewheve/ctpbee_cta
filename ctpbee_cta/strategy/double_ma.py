@@ -22,7 +22,6 @@ Notice : 神兽保佑 ，测试一次通过
 
 from ctpbee import CtpbeeApi
 from ctpbee.constant import (
-
     TickData,
     BarData,
     TradeData,
@@ -31,7 +30,7 @@ from ctpbee.constant import (
 
 from ctpbee_cta.constant import StopOrder
 from ctpbee_cta.cta import CtaCore
-from ctpbee_cta.help import ArrayManager
+from ctpbee_cta.indicator import ArrayManager
 
 
 class DoubleMaStrategy(CtpbeeApi):
@@ -52,7 +51,6 @@ class DoubleMaStrategy(CtpbeeApi):
 
     def __init__(self, name, app, cta_symbol):
         """"""
-
 
         super().__init__(extension_name=name, app=app)
         self.cta_symbol = cta_symbol
@@ -83,7 +81,6 @@ class DoubleMaStrategy(CtpbeeApi):
 
     def load_bar(self, count):
         """ Accourding to your own data"""
-
 
     def on_start(self):
         """

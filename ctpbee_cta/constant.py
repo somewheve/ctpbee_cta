@@ -47,7 +47,7 @@ class BacktestingMode(Enum):
 
 @dataclass
 class StopOrder:
-    vt_symbol: str
+    local_symbol: str
     direction: Direction
     offset: Offset
     price: float
