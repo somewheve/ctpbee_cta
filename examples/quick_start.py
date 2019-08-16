@@ -20,7 +20,7 @@ Notice : 神兽保佑 ，测试一次通过
 //
 """
 
-from ctpbee_cta.strartegy.double_ma import DoubleMaStrategy
+from ctpbee_cta.strategy.double_ma import DoubleMaStrategy
 from ctpbee import CtpBee
 
 
@@ -31,5 +31,8 @@ def go_ahead():
     app.start()
     app.subscribe("ag1912")
 
-go_ahead()
+
+if __name__ == '__main__':
+
+    go_ahead()
 

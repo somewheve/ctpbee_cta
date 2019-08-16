@@ -25,7 +25,7 @@ from setuptools import Extension, setup
 
 ext_modules = []
 
-pkgs = ['ctpbee_cta', 'ctpbee_cta.strartegy']
+pkgs = ['ctpbee_cta', 'ctpbee_cta.strategy']
 install_requires = ['ctpbee', "dataclasses"]
 setup(
     name='ctpbee_cta',
