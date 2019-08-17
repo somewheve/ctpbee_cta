@@ -28,6 +28,7 @@ from ctpbee.constant import (
     OrderData,
     AccountData, PositionData, LogData, ContractData)
 
+from ctpbee_cta.constant import EVENT_CTA_STOPORDER
 from ctpbee_cta.constant import StopOrder
 from ctpbee_cta.cta import CtaCore
 from ctpbee_cta.indicator import ArrayManager
@@ -54,14 +55,14 @@ class DoubleMaStrategy(CtpbeeApi):
 
         super().__init__(extension_name=name, app=app)
         self.cta_symbol = cta_symbol
-        self.cta_pointer = CtaCore(cta_name=self.name, app=self.app, symbol=self.cta_symbol)
+        self.cta_core = CtaCore(cta_name=self.name, app=self.app, symbol=self.cta_symbol)
         self.am = ArrayManager()
 
-    def put_event(self):
-        pass
+        # 注册停止单事件
+        self.app.event_engine.register(EVENT_CTA_STOPORDER, self.on_stop_order)
 
-    def on_init(self):
-        self.cta_pointer.export_log("策略初始化")
+    def start(self):
+        self.cta_core.export_log("策略初始化")
         self.load_bar(10)
 
     def on_account(self, account: AccountData) -> None:
@@ -71,12 +72,12 @@ class DoubleMaStrategy(CtpbeeApi):
         pass
 
     def on_log(self, log: LogData):
-        pass
+        print(log)
 
     def on_contract(self, contract: ContractData):
 
         if contract.local_symbol == self.cta_symbol:
-            self.cta_pointer.export_log("成功订阅相关行情")
+            self.cta_core.export_log("成功订阅相关行情")
             self.app.subscribe(self.cta_symbol)
 
     def load_bar(self, count):
@@ -86,76 +87,66 @@ class DoubleMaStrategy(CtpbeeApi):
         """
         Callback when strategy is started.
         """
-        self.cta_pointer.export_log("策略启动")
-        self.put_event()
-
-    def on_stop(self):
-        """
-        Callback when strategy is stopped.
-        """
-        self.cta_pointer.export_log("策略停止")
-        self.put_event()
+        self.cta_core.export_log("策略启动")
 
     def on_tick(self, tick: TickData):
         """
-        Callback of new tick data update.
+        处理tick
         """
         pass
 
     def on_bar(self, bar: BarData):
         """
-        Callback of new bar data update.
+        处理bar
         """
         # 初始化load
-        am = self.am
-        am.update_bar(bar)
-        if not am.inited:
-            return
+        if bar.interval == 1:
+            am = self.am
+            am.update_bar(bar)
+            if not am.inited:
+                return
 
-        fast_ma = am.sma(self.fast_window, array=True)
-        self.fast_ma0 = fast_ma[-1]
-        self.fast_ma1 = fast_ma[-2]
+            fast_ma = am.sma(self.fast_window, array=True)
+            self.fast_ma0 = fast_ma[-1]
+            self.fast_ma1 = fast_ma[-2]
 
-        slow_ma = am.sma(self.slow_window, array=True)
-        self.slow_ma0 = slow_ma[-1]
-        self.slow_ma1 = slow_ma[-2]
+            slow_ma = am.sma(self.slow_window, array=True)
+            self.slow_ma0 = slow_ma[-1]
+            self.slow_ma1 = slow_ma[-2]
 
-        cross_over = self.fast_ma0 > self.slow_ma0 and self.fast_ma1 < self.slow_ma1
-        cross_below = self.fast_ma0 < self.slow_ma0 and self.fast_ma1 > self.slow_ma1
+            cross_over = self.fast_ma0 > self.slow_ma0 and self.fast_ma1 < self.slow_ma1
+            cross_below = self.fast_ma0 < self.slow_ma0 and self.fast_ma1 > self.slow_ma1
 
-        if cross_over:
-            if self.cta_pointer.pos == 0:
-                self.cta_pointer.buy(bar.close_price, 1)
-            elif self.cta_pointer.pos < 0:
-                self.cta_pointer.cover(bar.close_price, 1)
-                self.cta_pointer.buy(bar.close_price, 1)
+            if cross_over:
+                if self.cta_core.pos == 0:
+                    self.cta_core.buy(bar.close_price, 1)
+                elif self.cta_core.pos < 0:
+                    self.cta_core.cover(bar.close_price, 1)
+                    self.cta_core.buy(bar.close_price, 1)
 
-        elif cross_below:
-            if self.cta_pointer.pos == 0:
-                self.cta_pointer.short(bar.close_price, 1)
-            elif self.cta_pointer.pos > 0:
-                self.cta_pointer.sell(bar.close_price, 1)
-                self.cta_pointer.short(bar.close_price, 1)
-
-        self.put_event()
+            elif cross_below:
+                if self.cta_core.pos == 0:
+                    self.cta_core.short(bar.close_price, 1)
+                elif self.cta_core.pos > 0:
+                    self.cta_core.sell(bar.close_price, 1)
+                    self.cta_core.short(bar.close_price, 1)
 
     def on_shared(self, shared):
         pass
 
     def on_order(self, order: OrderData):
         """
-        Callback of new order data update.
+        处理order事件
         """
         pass
 
     def on_trade(self, trade: TradeData):
         """
-        Callback of new trade data update.
+        更新成交单事件
         """
-        self.put_event()
 
     def on_stop_order(self, stop_order: StopOrder):
         """
-        Callback of stop order update.
+
         """
         pass
